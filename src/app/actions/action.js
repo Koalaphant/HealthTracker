@@ -19,6 +19,13 @@ export async function getAllUniqueLogDates() {
   return uniqueDates;
 }
 
+export async function getAllLogsByDate() {
+  return await prisma.log.findMany({
+    select: { option: true, value: true, createdAt: true },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
 export async function getLogsByDate(dateStr) {
   const selectedDate = new Date(dateStr);
   const nextDate = new Date(selectedDate);

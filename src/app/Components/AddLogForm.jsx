@@ -11,11 +11,13 @@ export default function AddLogForm() {
     "Serum Alanine",
     "Serum Protein Profile",
     "Serum Albubin",
+    "Serum Albumin",
     "Serum Globulin",
     "Serum Cholesterol",
     "Serum Trigycerides",
     "Serum HDL Cholesterol",
     "Serum LDL Cholesterol",
+    "Cholesterol Level",
     "Thyroid",
   ];
 
