@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllLogsByDate, getLogsByDate } from "../actions/action";
+import {
+  getAllLogsByDate,
+  getLogsByDate,
+  getAllUniqueLogDates,
+} from "../actions/action";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -22,10 +26,19 @@ ChartJS.register(
   Legend
 );
 
-export default function LogsByDate({ dates }) {
+export default function LogsByDate() {
+  const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [logsByDate, setLogsByDate] = useState([]);
   const [allLogs, setAllLogs] = useState([]);
+
+  useEffect(() => {
+    async function fetchDates() {
+      const uniqueDates = await getAllUniqueLogDates();
+      setDates(uniqueDates);
+    }
+    fetchDates();
+  }, []);
 
   useEffect(() => {
     async function fetchAllLogs() {
