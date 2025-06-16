@@ -80,19 +80,21 @@ export default function LogsByDate() {
 
   return (
     <div className="p-4 sm:p-6">
-      <h2 className="text-xl font-bold mb-4">Select a date</h2>
-      <select
-        value={selectedDate}
-        onChange={handleChange}
-        className="mb-6 w-full max-w-xs rounded border px-3 py-2"
-      >
-        <option value="">Select date</option>
-        {dates.map((d) => (
-          <option key={d} value={d}>
-            {new Date(d).toLocaleDateString("en-GB")}
-          </option>
-        ))}
-      </select>
+      <div className="mb-6 flex items-center gap-2">
+        <label className="font-semibold">Select a date:</label>
+        <select
+          value={selectedDate}
+          onChange={handleChange}
+          className="w-full max-w-xs rounded border border-purple-500 px-3 py-2 bg-white text-black"
+        >
+          <option value="">Select date</option>
+          {dates.map((d) => (
+            <option key={d} value={d}>
+              {new Date(d).toLocaleDateString("en-GB")}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="mb-8 bg-white rounded p-4">
         <div className="relative w-full h-[500px] sm:h-[400px]">
