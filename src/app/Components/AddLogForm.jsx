@@ -1,8 +1,7 @@
 "use client";
 
-import { submitForm } from "../actions/action";
+import { useState } from "react";
 import SingleForm from "../Components/SingleForm";
-import { useActionState, useState, useEffect } from "react";
 
 export default function AddLogForm() {
   const options = [
@@ -20,19 +19,30 @@ export default function AddLogForm() {
     "Thyroid",
   ];
 
-  const [dateString, setDateString] = useState("");
+  const [rawDate, setRawDate] = useState("");
 
-  useEffect(() => {
-    setDateString(new Date().toLocaleDateString("en-GB"));
-  }, []);
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const [year, month, day] = dateStr.split("-");
+    return `${day}-${month}-${year}`;
+  };
 
   return (
     <>
+      <label htmlFor="date">Date for submission:</label>
+      <input
+        type="date"
+        id="date"
+        name="date"
+        onChange={(e) => setRawDate(e.target.value)}
+      />
+
       <h1 className="text-2xl font-bold text-center m-10">
-        Date for submission: {dateString}
+        Date for submission: {formatDate(rawDate)}
       </h1>
+
       {options.map((option, i) => (
-        <SingleForm key={i} option={option} />
+        <SingleForm key={i} option={option} date={rawDate} />
       ))}
     </>
   );

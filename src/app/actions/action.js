@@ -6,59 +6,71 @@ export async function findAllLogs() {
   return await prisma.log.findMany();
 }
 
-export async function findLog(option) {
-  return await prisma.log.findMany({
-    where: { option },
+export async function getAllUniqueLogDates() {
+  const logs = await prisma.log.findMany({
+    select: { createdAt: true },
+    orderBy: { createdAt: "desc" },
   });
+
+  const uniqueDates = [
+    ...new Set(logs.map((log) => log.createdAt.toISOString().split("T")[0])),
+  ];
+
+  return uniqueDates;
 }
 
-export async function findLogByOptionAndDate(option, date) {
-  const start = new Date(date);
-  const end = new Date(date);
-  end.setDate(end.getDate() + 1);
+export async function getLogsByDate(dateStr) {
+  const selectedDate = new Date(dateStr);
+  const nextDate = new Date(selectedDate);
+  nextDate.setDate(nextDate.getDate() + 1);
 
-  return await prisma.log.findFirst({
+  const logs = await prisma.log.findMany({
     where: {
-      option,
       createdAt: {
-        gte: start,
-        lt: end,
+        gte: selectedDate,
+        lt: nextDate,
       },
     },
+    orderBy: { option: "asc" },
   });
+
+  return logs;
 }
 
 export async function submitForm(prevState, formData) {
   try {
     const optionName = formData.get("optionName");
     const inputNumber = formData.get("inputNumber");
+    const dateStr = formData.get("date");
 
-    //get all logs based on the option from the form
-    const logs = await prisma.log.findMany({
-      where: { option: optionName },
+    if (!dateStr) throw new Error("Date is required");
+
+    const selectedDate = new Date(dateStr);
+    const nextDate = new Date(selectedDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+
+    // Check if log exists for this option and date
+    const existingLog = await prisma.log.findFirst({
+      where: {
+        option: optionName,
+        createdAt: {
+          gte: selectedDate,
+          lt: nextDate,
+        },
+      },
     });
 
-    //map over logs to see a log has already been submitted for the day
-    logs.forEach((log) => {
-      const logDate = log.createdAt.toISOString().slice(0, 10);
-      const currentDate = new Date().toISOString().slice(0, 10);
+    if (existingLog) throw new Error("Log already submitted for this date...");
 
-      if (currentDate === logDate) {
-        throw new Error("Log already submitted for today...");
-      }
-    });
-
-    //if not, checks if log value is less than zero
-    if (inputNumber < 0) {
+    if (parseFloat(inputNumber) < 0)
       return { message: "Value can't be less than 0", error: true };
-    }
 
-    //finally creates log if log has not been created for the day
-
+    // Create log with createdAt = selectedDate from form
     await prisma.log.create({
       data: {
         option: optionName,
         value: parseFloat(inputNumber),
+        createdAt: selectedDate,
       },
     });
 

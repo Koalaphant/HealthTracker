@@ -1,12 +1,8 @@
-import { findAllLogs } from "../actions/action";
-import LogList from "../Components/LogList";
+import { getAllUniqueLogDates } from "../actions/action";
+import LogsByDate from "../Components/LogsByDate";
 
-export default async function viewLogs() {
-  const logs = await findAllLogs();
+export default async function ViewLogsPage() {
+  const dates = await getAllUniqueLogDates();
 
-  return (
-    <>
-      <LogList logs={logs} />
-    </>
-  );
+  return <LogsByDate dates={dates} />;
 }

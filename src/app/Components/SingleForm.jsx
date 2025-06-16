@@ -1,7 +1,7 @@
 import { useActionState } from "react";
 import { submitForm } from "../actions/action";
 
-export default function SingleForm({ option }) {
+export default function SingleForm({ option, date }) {
   const [state, formAction, pending] = useActionState(submitForm, null);
 
   return (
@@ -11,6 +11,7 @@ export default function SingleForm({ option }) {
     >
       <h2 className="text-xl font-bold mb-4">{option}</h2>
       <input type="hidden" name="optionName" value={option} />
+      <input type="hidden" name="date" value={date || ""} />
       <label className="block">
         <span className="block mb-1 font-semibold">Value</span>
         <input
