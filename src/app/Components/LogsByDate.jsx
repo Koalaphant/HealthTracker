@@ -56,7 +56,7 @@ export default function LogsByDate() {
   }
 
   const grouped = allLogs.reduce((acc, log) => {
-    const date = new Date(log.createdAt).toLocaleDateString("en-GB");
+    const date = new Date(log.createdAt).toISOString().split("T")[0];
     if (!acc[log.option]) acc[log.option] = {};
     acc[log.option][date] = log.value;
     return acc;
@@ -64,7 +64,7 @@ export default function LogsByDate() {
 
   const allDates = Array.from(
     new Set(
-      allLogs.map((log) => new Date(log.createdAt).toLocaleDateString("en-GB"))
+      allLogs.map((log) => new Date(log.createdAt).toISOString().split("T")[0])
     )
   ).sort((a, b) => new Date(a) - new Date(b));
 
